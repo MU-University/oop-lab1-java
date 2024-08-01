@@ -2,10 +2,6 @@ name: Build and Test Maven Project
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
 
 jobs:
   build:
