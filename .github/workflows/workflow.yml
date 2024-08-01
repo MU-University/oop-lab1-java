@@ -22,12 +22,12 @@ jobs:
       - name: Build Project
         id: build
         run: |
-          mvn -B clean package --file pom.xml || true  # Run build, but don't fail the step if it fails
+          mvn -B clean package --file pom.xml # Run build, but don't fail the step if it fails
 
       - name: Run Tests
         id: test
         run: |
-          mvn -B test --file pom.xml || true  # Run tests, but don't fail the step if it fails
+          mvn -B test --file pom.xml # Run tests, but don't fail the step if it fails
 
       - name: Generate and Upload Test Report
         if: always()  # Run this step regardless of previous step result
