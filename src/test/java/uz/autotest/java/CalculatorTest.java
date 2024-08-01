@@ -10,7 +10,6 @@ class CalculatorTest {
 
     private final Calculator calculator = new Calculator();
 
-    @Test
     @ParameterizedTest(name = "add({0}, {1}) = {2}")
     @CsvSource({
             "1, 1, 2",
