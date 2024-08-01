@@ -41,10 +41,3 @@ jobs:
         with:
           name: test-report
           path: junit/test-results.xml
-
-      - name: Upload Build Artifact
-        if: success()  # Only upload if build is successful
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifact
-          path: target/*.jar
