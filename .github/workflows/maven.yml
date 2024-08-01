@@ -1,11 +1,11 @@
-name: Build and Package Maven Project
+name: Build, Test, and Package Maven Project
 
 on:
   workflow_dispatch:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 jobs:
   build:
@@ -23,11 +23,20 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Build Project
+      - name: Build and Test Project
         run: mvn -B clean package --file pom.xml
+
+      - name: Generate Test Report
+        run: mvn surefire-report:report -DoutputDirectory=target/site
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
           name: maven-build
           path: target/*.jar
+
+      - name: Upload Test Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: target/site
