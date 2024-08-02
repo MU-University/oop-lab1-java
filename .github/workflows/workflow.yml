@@ -5,8 +5,12 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
+
+    outputs:
+      run-id: ${{ steps.build.outputs.run-id }}
+      run-number: ${{ steps.build.outputs.run-number }}
+      artifact-download-url: ${{ steps.artifact-download-url.outputs.url }}
 
     steps:
       - name: Checkout Code
@@ -23,20 +27,21 @@ jobs:
         id: build
         run: |
           mvn -B clean package --file pom.xml
+          echo "::set-output name=run-id::${{ github.run_id }}"
+          echo "::set-output name=run-number::${{ github.run_number }}"
 
       - name: Run Tests
         id: test
-        run: |
-          mvn -B test --file pom.xml
+        run: mvn -B test --file pom.xml
 
       - name: Generate and Upload Test Report
-        if: always()  # Run this step regardless of previous step result
+        if: always()
         run: |
           mkdir -p junit
           cp target/surefire-reports/*.xml junit/test-results.xml
 
       - name: Upload Test Report
-        if: always()  # Upload test report even if previous steps fail
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-report
@@ -45,13 +50,16 @@ jobs:
       - name: Get Artifact Download URL
         if: always()
         id: artifact-download-url
-        run: |
-          echo "::set-output name=url::https://github.com/${{ github.repository }}/suites/${{ github.run_id }}/artifacts"
+        run: echo "::set-output name=url::https://github.com/${{ github.repository }}/suites/${{ github.run_id }}/artifacts"
 
+  notify:
+    runs-on: ubuntu-latest
+    needs: build
+    if: always()
+    steps:
       - name: Notify Webhook
-        if: always()  # Run this step regardless of previous step result
         run: |
-          if [ "${{ steps.build.outcome }}" == "success" ]; then
+          if [ "${{ needs.build.result }}" == "success" ]; then
             STATUS="SUCCESS"
           else
             STATUS="FAILURE"
@@ -60,23 +68,21 @@ jobs:
           REPO_OWNER="${{ github.repository_owner }}"
           BRANCH_NAME="${{ github.ref }}"
           COMMIT_SHA="${{ github.sha }}"
-          RUN_ID="${{ github.run_id }}"
-          RUN_NUMBER="${{ github.run_number }}"
-          ARTIFACT_URL="${{ steps.artifact-download-url.outputs.url }}"
-          USERNAME="${{ github.actor }}"
+          RUN_ID="${{ needs.build.outputs.run-id }}"
+          RUN_NUMBER="${{ needs.build.outputs.run-number }}"
+          ARTIFACT_URL="${{ needs.build.outputs.artifact-download-url }}"
           curl -X POST \
             -H "Content-Type: application/json" \
             -d '{
                   "status": "'"$STATUS"'",
                   "repository": {
                     "name": "'"$REPO_NAME"'",
-                    "owner": "'"$REPO_OWNER"'",
-                    "username": "'"$USERNAME"'"
+                    "owner": "'"$REPO_OWNER"'"
                   },
                   "branch": "'"$BRANCH_NAME"'",
                   "commit": "'"$COMMIT_SHA"'",
-                  "run_id": "'"$RUN_ID"'",
-                  "run_number": "'"$RUN_NUMBER"'",
-                  "artifact_url": "'"$ARTIFACT_URL"'"
+                  "runId": "'"$RUN_ID"'",
+                  "runNumber": "'"$RUN_NUMBER"'",
+                  "artifactUrl": "'"$ARTIFACT_URL"'"
                 }' \
             https://eshonkulov-asliddin.jprq.app/workflow/results
