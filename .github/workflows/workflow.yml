@@ -50,7 +50,23 @@ jobs:
           else
             STATUS="FAILURE"
           fi
+          REPO_NAME="${{ github.repository }}"
+          REPO_OWNER="${{ github.repository_owner }}"
+          BRANCH_NAME="${{ github.ref }}"
+          COMMIT_SHA="${{ github.sha }}"
+          RUN_ID="${{ github.run_id }}"
+          RUN_NUMBER="${{ github.run_number }}"
           curl -X POST \
             -H "Content-Type: application/json" \
-            -d '{"status": "'"$STATUS"'", "build_id": "'"${{ github.run_id }}"'"}' \
+            -d '{
+                  "status": "'"$STATUS"'",
+                  "repository": {
+                    "name": "'"$REPO_NAME"'",
+                    "owner": "'"$REPO_OWNER"'"
+                  },
+                  "branch": "'"$BRANCH_NAME"'",
+                  "commit": "'"$COMMIT_SHA"'",
+                  "run_id": "'"$RUN_ID"'",
+                  "run_number": "'"$RUN_NUMBER"'"
+                }' \
             https://qccmslzejl.execute-api.us-east-1.amazonaws.com/dev/autotest
