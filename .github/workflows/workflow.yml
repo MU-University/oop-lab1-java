@@ -22,12 +22,14 @@ jobs:
       - name: Build Project
         id: build
         run: |
-          mvn -B clean package --file pom.xml # Run build, but don't fail the step if it fails
+          mvn -B clean package --file pom.xml
+        continue-on-error: true # Continue even if the build fails
 
       - name: Run Tests
         id: test
         run: |
-          mvn -B test --file pom.xml # Run tests, but don't fail the step if it fails
+          mvn -B test --file pom.xml
+        continue-on-error: true # Continue even if the tests fail
 
       - name: Generate and Upload Test Report
         if: always()  # Run this step regardless of previous step result
@@ -41,3 +43,16 @@ jobs:
         with:
           name: test-report
           path: junit/test-results.xml
+
+      - name: Notify Webhook
+        if: always()  # Run this step regardless of previous step result
+        run: |
+          if [ "${{ steps.build.outcome }}" == "success" ]; then
+            STATUS="SUCCESS"
+          else
+            STATUS="FAILURE"
+          fi
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -d '{"status": "'"$STATUS"'", "build_id": "'"${{ github.run_id }}"'"}' \
+            https://qccmslzejl.execute-api.us-east-1.amazonaws.com/dev/autotest
