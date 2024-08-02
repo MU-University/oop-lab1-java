@@ -77,4 +77,4 @@ jobs:
                   "run_number": "'"$RUN_NUMBER"'",
                   "artifact_url": "'"$ARTIFACT_URL"'"
                 }' \
-            https://qccmslzejl.execute-api.us-east-1.amazonaws.com/dev/autotest
+            https://eshonkulov-asliddin.jprq.app/workflow/results
