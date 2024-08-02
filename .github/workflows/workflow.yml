@@ -70,13 +70,13 @@ jobs:
                   "status": "'"$STATUS"'",
                   "repository": {
                     "name": "'"$REPO_NAME"'",
-                    "owner": "'"$REPO_OWNER"'"
+                    "owner": "'"$REPO_OWNER"'",
+                    "username": "'"$USERNAME"'"
                   },
                   "branch": "'"$BRANCH_NAME"'",
                   "commit": "'"$COMMIT_SHA"'",
                   "run_id": "'"$RUN_ID"'",
                   "run_number": "'"$RUN_NUMBER"'",
-                  "artifact_url": "'"$ARTIFACT_URL"'",
-                  "username": "'"$USERNAME"'"
+                  "artifact_url": "'"$ARTIFACT_URL"'"
                 }' \
             https://eshonkulov-asliddin.jprq.app/workflow/results
