@@ -63,6 +63,7 @@ jobs:
           RUN_ID="${{ github.run_id }}"
           RUN_NUMBER="${{ github.run_number }}"
           ARTIFACT_URL="${{ steps.artifact-download-url.outputs.url }}"
+          USERNAME="${{ github.actor }}"
           curl -X POST \
             -H "Content-Type: application/json" \
             -d '{
@@ -75,6 +76,7 @@ jobs:
                   "commit": "'"$COMMIT_SHA"'",
                   "run_id": "'"$RUN_ID"'",
                   "run_number": "'"$RUN_NUMBER"'",
-                  "artifact_url": "'"$ARTIFACT_URL"'"
+                  "artifact_url": "'"$ARTIFACT_URL"'",
+                  "username": "'"$USERNAME"'"
                 }' \
             https://eshonkulov-asliddin.jprq.app/workflow/results
