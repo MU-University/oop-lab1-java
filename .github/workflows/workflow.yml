@@ -42,6 +42,12 @@ jobs:
           name: test-report
           path: junit/test-results.xml
 
+      - name: Get Artifact Download URL
+        if: always()
+        id: artifact-download-url
+        run: |
+          echo "::set-output name=url::https://github.com/${{ github.repository }}/suites/${{ github.run_id }}/artifacts"
+
       - name: Notify Webhook
         if: always()  # Run this step regardless of previous step result
         run: |
@@ -56,6 +62,7 @@ jobs:
           COMMIT_SHA="${{ github.sha }}"
           RUN_ID="${{ github.run_id }}"
           RUN_NUMBER="${{ github.run_number }}"
+          ARTIFACT_URL="${{ steps.artifact-download-url.outputs.url }}"
           curl -X POST \
             -H "Content-Type: application/json" \
             -d '{
@@ -67,6 +74,7 @@ jobs:
                   "branch": "'"$BRANCH_NAME"'",
                   "commit": "'"$COMMIT_SHA"'",
                   "run_id": "'"$RUN_ID"'",
-                  "run_number": "'"$RUN_NUMBER"'"
+                  "run_number": "'"$RUN_NUMBER"'",
+                  "artifact_url": "'"$ARTIFACT_URL"'"
                 }' \
             https://qccmslzejl.execute-api.us-east-1.amazonaws.com/dev/autotest
