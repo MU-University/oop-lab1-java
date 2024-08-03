@@ -23,7 +23,7 @@ jobs:
 
       - name: Build with Maven
         id: build
-        run: mvn -B package --file pom.xml 2>&1 | tee build_output.log
+        run: mvn -B package | tee build_output.log
         continue-on-error: false
       
       - name: Create directory for test results
