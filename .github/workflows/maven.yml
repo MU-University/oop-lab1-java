@@ -46,7 +46,7 @@ jobs:
     - name: Generate and Upload Test Report
       if: always()
       run: |
-        mkdir -p maven
+        mkdir -p junit
         cp target/surefire-reports/*.xml junit/test-results.xml
           
     - name: Upload a Build Artifact
