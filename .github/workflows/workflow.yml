@@ -3,7 +3,7 @@ name: Build and Test Maven Project
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
     branches: [ main ]
 
