@@ -41,7 +41,9 @@ jobs:
 
     - name: Run Tests with Maven
       id: test
-      run: mvn -B test --file pom.xml
+      run: |
+        mvn clean
+        mvn -B test --file pom.xml
 
     - name: Generate and Upload Test Report
       if: always()
