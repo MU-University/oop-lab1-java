@@ -25,7 +25,6 @@ jobs:
     - name: Build with Maven
       id: build
       run: mvn -B package --file pom.xml
-      continue-on-error: true
 
     - name: Generate Build Error Report
       if: steps.build.outcome == 'failure'
