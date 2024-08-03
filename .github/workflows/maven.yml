@@ -1,3 +1,4 @@
+
 name: Java CI with Maven
 
 on:
@@ -21,32 +22,21 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      id: build
       run: mvn -B package --file pom.xml
-      continue-on-error: true
-
-    - name: Generate Build Error Report
-      if: steps.build.outcome == 'failure'
-      run: |
-        mkdir -p junit
-        echo '<?xml version="1.0" encoding="UTF-8"?>' > junit/test-results.xml
-        echo '  <testsuite name="Build Errors" tests="1" failures="1">' >> junit/test-results.xml
-        echo '    <testcase classname="Build" name="Build Script">' >> junit/test-results.xml
-        echo '      <failure type="error" message="Build failed. See log for details."><![CDATA[' >> junit/test-results.xml
-        echo '      ]]></failure>' >> junit/test-results.xml
-        echo '    </testcase>' >> junit/test-results.xml
-        echo '  </testsuite>' >> junit/test-results.xml
 
     - name: Generate and Upload Test Report
-      if: steps.build.outcome == 'success'
+      if: always()
       run: |
-        mkdir -p junit
-        cp target/surefire-reports/*.xml junit/test-results.xml
-
+        mkdir -p maven
+        cp target/surefire-reports/*.xml maven/test-results.xml
+          
     - name: Upload a Build Artifact
       if: always()
       uses: actions/upload-artifact@v4.3.5
       with:
         # Artifact name
-        name: test-results
-        path: junit/test-results.xml
+        name: tet-results
+        path: maven/test-results.xml
+  
+  
+          
