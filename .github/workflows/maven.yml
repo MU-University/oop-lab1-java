@@ -47,7 +47,7 @@ jobs:
       if: always()
       run: |
         mkdir -p maven
-        cp target/surefire-reports/*.xml maven/test-results.xml
+        cp target/surefire-reports/*.xml junit/test-results.xml
           
     - name: Upload a Build Artifact
       if: always()
@@ -55,7 +55,7 @@ jobs:
       with:
         # Artifact name
         name: tet-results
-        path: maven/test-results.xml
+        path: junit/test-results.xml
   
   
           
