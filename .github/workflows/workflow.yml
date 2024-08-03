@@ -28,29 +28,28 @@ jobs:
         if: failure() && steps.build.outcome == 'failure'
         run: |
           mkdir -p target/surefire-reports
-          echo '<?xml version="1.0" encoding="UTF-8"?>' > target/surefire-reports/build-error-report.xml
-          echo '<testsuite name="Build Errors" tests="1" failures="1">' >> target/surefire-reports/build-error-report.xml
-          echo '  <testcase classname="Build" name="Build Script">' >> target/surefire-reports/build-error-report.xml
-          echo '    <failure type="error" message="Build failed. See log for details."><![CDATA[' >> target/surefire-reports/build-error-report.xml
-          cat build_failed.txt >> target/surefire-reports/build-error-report.xml
-          echo '    ]]></failure>' >> target/surefire-reports/build-error-report.xml
-          echo '  </testcase>' >> target/surefire-reports/build-error-report.xml
-          echo '</testsuite>' >> target/surefire-reports/build-error-report.xml
+          echo '<?xml version="1.0" encoding="UTF-8"?>' > target/surefire-reports/test-results.xml
+          echo '<testsuite name="Build Errors" tests="1" failures="1">' >> target/surefire-reports/test-results.xml
+          echo '  <testcase classname="Build" name="Build Script">' >> target/surefire-reports/test-results.xml
+          echo '    <failure type="error" message="Build failed. See log for details."><![CDATA[' >> target/surefire-reports/test-results.xml
+          cat build_failed.txt >> target/surefire-reports/test-results.xml
+          echo '    ]]></failure>' >> target/surefire-reports/test-results.xml
+          echo '  </testcase>' >> target/surefire-reports/test-results.xml
+          echo '</testsuite>' >> target/surefire-reports/test-results.xml
           
       - name: Run Tests
         id: test
-        run: |
-          mvn -B test --file pom.xml
+        run: mvn -B test --file pom.xml
 
       - name: Generate and Upload Test Report
-        if: always()  # Run this step regardless of previous step result
+        if: always()
         run: |
           mkdir -p junit
           cp target/surefire-reports/*.xml junit/test-results.xml
-
+      
       - name: Upload Test Report
-        if: always()  # Upload test report even if previous steps fail
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-report
-          path: junit/test-results.xml
+          path: target/surefire-reports/test-results.xml
