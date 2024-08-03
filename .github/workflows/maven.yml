@@ -21,8 +21,27 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+
     - name: Build with Maven
+      id: build
       run: mvn -B package --file pom.xml
+      continue-on-error: true
+
+    - name: Generate Build Error Report
+      if: steps.build.outcome == 'failure'
+      run: |
+        mkdir -p target/surefire-reports
+        echo '<?xml version="1.0" encoding="UTF-8"?>' > target/surefire-reports/test-results.xml
+        echo '  <testsuite name="Build Errors" tests="1" failures="1">' >> target/surefire-reports/test-results.xml
+        echo '    <testcase classname="Build" name="Build Script">' >> target/surefire-reports/test-results.xml
+        echo '      <failure type="error" message="Build failed. See log for details."><![CDATA[' >> target/surefire-reports/test-results.xml
+        echo '      ]]></failure>' >> target/surefire-reports/test-results.xml
+        echo '    </testcase>' >> target/surefire-reports/test-results.xml
+        echo '  </testsuite>' >> target/surefire-reports/test-results.xml
+
+    - name: Run Tests with Maven
+      id: test
+      run: mvn test
 
     - name: Generate and Upload Test Report
       if: always()
