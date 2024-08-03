@@ -51,16 +51,3 @@ jobs:
         run: |
           mvn -B test --file pom.xml
         continue-on-error: false  # Continue even if tests fail
-
-      - name: Generate and Upload Test Report
-        if: always()  # Always run this step
-        run: |
-          mkdir -p junit
-          cp target/surefire-reports/*.xml junit/test-results.xml
-
-      - name: Upload Test Report
-        if: always()  # Always upload the test report
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-report
-          path: junit/test-results.xml
