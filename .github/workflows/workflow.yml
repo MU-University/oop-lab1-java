@@ -45,9 +45,10 @@ jobs:
         with:
           name: build-error-report
           path: junit/test-results.xml
-          
+
       - name: Run Tests
         id: test
+        if: steps.build.outcome == 'success'
         run: |
           mvn -B test --file pom.xml
         continue-on-error: true
