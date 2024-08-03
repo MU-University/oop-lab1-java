@@ -27,9 +27,8 @@ jobs:
       run: mvn -B package --file pom.xml
 
     - name: Generate Build Error Report
-      echo "Build outcome: ${{ steps.build.outcome }}"
-      if: steps.build.outcome == 'failure'
       run: |
+        echo "Build outcome: ${{ steps.build.outcome }}"
         mkdir -p target/surefire-reports
         echo '<?xml version="1.0" encoding="UTF-8"?>' > target/surefire-reports/test-results.xml
         echo '  <testsuite name="Build Errors" tests="1" failures="1">' >> target/surefire-reports/test-results.xml
