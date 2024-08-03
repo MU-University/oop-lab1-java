@@ -25,7 +25,10 @@ jobs:
         id: build
         run: mvn -B package --file pom.xml
         continue-on-error: true
-
+      
+      - name: Create directory for test results
+        run: mkdir -p junit
+        
       - name: Generate Build Error Report
         if: steps.build.outcome == 'failure'
         run: |
