@@ -34,7 +34,7 @@ jobs:
         echo '<?xml version="1.0" encoding="UTF-8"?>' > target/surefire-reports/test-results.xml
         echo '  <testsuite name="Build Errors" tests="1" failures="1">' >> target/surefire-reports/test-results.xml
         echo '    <testcase classname="Build" name="Build Script">' >> target/surefire-reports/test-results.xml
-        echo '      <failure type="error" message="Build failed. See log for details."><![CDATA[' >> target/surefire-reports/test-results.xml
+        echo '      <failure type="error" message="Build failed due to syntax error"><![CDATA[' >> target/surefire-reports/test-results.xml
         echo '      ]]></failure>' >> target/surefire-reports/test-results.xml
         echo '    </testcase>' >> target/surefire-reports/test-results.xml
         echo '  </testsuite>' >> target/surefire-reports/test-results.xml
