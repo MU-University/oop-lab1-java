@@ -1,11 +1,3 @@
-# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
-
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
 name: Java CI with Maven
 
 on:
@@ -29,21 +21,32 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
+      id: build
       run: mvn -B package --file pom.xml
+      continue-on-error: true
+
+    - name: Generate Build Error Report
+      if: steps.build.outcome == 'failure'
+      run: |
+        mkdir -p junit
+        echo '<?xml version="1.0" encoding="UTF-8"?>' > junit/test-results.xml
+        echo '  <testsuite name="Build Errors" tests="1" failures="1">' >> junit/test-results.xml
+        echo '    <testcase classname="Build" name="Build Script">' >> junit/test-results.xml
+        echo '      <failure type="error" message="Build failed. See log for details."><![CDATA[' >> junit/test-results.xml
+        echo '      ]]></failure>' >> junit/test-results.xml
+        echo '    </testcase>' >> junit/test-results.xml
+        echo '  </testsuite>' >> junit/test-results.xml
 
     - name: Generate and Upload Test Report
-      if: always()
+      if: steps.build.outcome == 'success'
       run: |
         mkdir -p junit
         cp target/surefire-reports/*.xml junit/test-results.xml
-          
+
     - name: Upload a Build Artifact
       if: always()
       uses: actions/upload-artifact@v4.3.5
       with:
         # Artifact name
-        name: tet-results
+        name: test-results
         path: junit/test-results.xml
-  
-  
-          
