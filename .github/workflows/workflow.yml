@@ -24,7 +24,7 @@ jobs:
       - name: Build with Maven
         id: build
         run: mvn -B package --file pom.xml 2>&1 | tee build_output.log
-        continue-on-error: true
+        continue-on-error: false
       
       - name: Create directory for test results
         run: mkdir -p junit
@@ -50,4 +50,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: test-results
-          path: target/surefire-reports/*.xml
+          path: junit/test-results.xml
