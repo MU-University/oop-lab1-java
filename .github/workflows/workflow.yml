@@ -39,6 +39,13 @@ jobs:
           echo '    </testcase>' >> junit/test-results.xml
           echo '  </testsuite>' >> junit/test-results.xml
 
+      - name: Upload Build Error Report
+        if: failure()  # Only upload if the build failed
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-error-report
+          path: junit/test-results.xml
+          
       - name: Run Tests
         id: test
         run: |
@@ -56,11 +63,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-report
-          path: junit/test-results.xml
-
-      - name: Upload Build Error Report
-        if: failure()  # Only upload if the build failed
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-error-report
           path: junit/test-results.xml
