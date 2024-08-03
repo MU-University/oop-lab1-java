@@ -47,7 +47,7 @@ jobs:
       if: always()
       run: |
         mkdir -p junit
-        cp target/surefire-reports/*.xml junit/test-results.xml
+        cp target/surefire-reports/*test-results.xml junit/test-results.xml
           
     - name: Upload a Build Artifact
       if: always()
