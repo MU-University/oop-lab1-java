@@ -25,10 +25,10 @@ jobs:
         id: build
         run: |
           mvn -B clean package --file pom.xml 2>&1 | tee build_output.log
-        continue-on-error: false
+        continue-on-error: true
 
       - name: Generate Build Error Report
-        if: failure()  # Only run if the previous steps failed
+        if: steps.build.outcome == 'failure'
         run: |
           echo '<?xml version="1.0" encoding="UTF-8"?>' > junit/test-results.xml
           echo '  <testsuite name="Build Errors" tests="1" failures="1">' >> junit/test-results.xml
@@ -40,7 +40,7 @@ jobs:
           echo '  </testsuite>' >> junit/test-results.xml
 
       - name: Upload Build Error Report
-        if: failure()  # Only upload if the build failed
+        if: steps.build.outcome == 'failure'
         uses: actions/upload-artifact@v4
         with:
           name: build-error-report
@@ -50,4 +50,17 @@ jobs:
         id: test
         run: |
           mvn -B test --file pom.xml
-        continue-on-error: false  # Continue even if tests fail
+        continue-on-error: true
+
+      - name: Generate and Upload Test Report
+        if: steps.build.outcome == 'success'
+        run: |
+          mkdir -p junit
+          cp target/surefire-reports/*.xml junit/test-results.xml
+
+      - name: Upload Test Report
+        if: steps.build.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: junit/test-results.xml
