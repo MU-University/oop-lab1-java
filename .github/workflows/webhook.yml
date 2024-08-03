@@ -2,7 +2,7 @@ name: Notify Completion
 
 on:
   workflow_run:
-    workflows: ["Build and Test Maven Project"]
+    workflows: ["Build and Test Maven Projec"]
     types:
       - completed
 
