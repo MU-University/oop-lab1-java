@@ -30,14 +30,20 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-    
+
+    - name: Generate and Upload Test Report
+      if: always()
+      run: |
+        mkdir -p junit
+        cp target/surefire-reports/*.xml junit/test-results.xml
+          
     - name: Upload a Build Artifact
       if: always()
       uses: actions/upload-artifact@v4.3.5
       with:
         # Artifact name
         name: tet-results
-        path: target/surefire-reports/*.xml
+        path: junit/test-results.xml
   
   
           
