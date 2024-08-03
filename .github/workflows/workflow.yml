@@ -47,4 +47,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: test-results
-          path: junit/test-results.xml
+          path: target/surefire-reports/*.xml
