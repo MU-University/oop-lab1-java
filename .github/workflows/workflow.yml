@@ -23,7 +23,20 @@ jobs:
         id: build
         run: |
           mvn -B clean package --file pom.xml
-
+      
+      - name: Generate Build Error Report
+        if: failure() && steps.build.outcome == 'failure'
+        run: |
+          mkdir -p target/surefire-reports
+          echo '<?xml version="1.0" encoding="UTF-8"?>' > target/surefire-reports/build-error-report.xml
+          echo '<testsuite name="Build Errors" tests="1" failures="1">' >> target/surefire-reports/build-error-report.xml
+          echo '  <testcase classname="Build" name="Build Script">' >> target/surefire-reports/build-error-report.xml
+          echo '    <failure type="error" message="Build failed. See log for details."><![CDATA[' >> target/surefire-reports/build-error-report.xml
+          cat build_failed.txt >> target/surefire-reports/build-error-report.xml
+          echo '    ]]></failure>' >> target/surefire-reports/build-error-report.xml
+          echo '  </testcase>' >> target/surefire-reports/build-error-report.xml
+          echo '</testsuite>' >> target/surefire-reports/build-error-report.xml
+          
       - name: Run Tests
         id: test
         run: |
