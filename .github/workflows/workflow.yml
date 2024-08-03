@@ -28,14 +28,16 @@ jobs:
         if: failure() && steps.build.outcome == 'failure'
         run: |
           mkdir -p junit
-          echo '<?xml version="1.0" encoding="UTF-8"?>' > junit/test-results.xml
-          echo '<testsuite name="Build Errors" tests="1" failures="1">' >> junit/test-results.xml
-          echo '  <testcase classname="Build" name="Build Script">' >> junit/test-results.xml
-          echo '    <failure type="error" message="Build failed. See log for details."><![CDATA[' >> junit/test-results.xml
-          cat build_failed.txt >> junit/test-results.xml
-          echo '    ]]></failure>' >> junit/test-results.xml
-          echo '  </testcase>' >> junit/test-results.xml
-          echo '</testsuite>' >> junit/test-results.xml
+          cat <<EOF > junit/test-results.xml
+          <?xml version="1.0" encoding="UTF-8"?>
+          <testsuite name="Build Errors" tests="1" failures="1">
+            <testcase classname="Build" name="Build Script">
+              <failure type="error" message="Build failed. See log for details."><![CDATA[
+          $(cat build_failed.txt)
+              ]]></failure>
+            </testcase>
+          </testsuite>
+          EOF
           
       - name: Run Tests
         id: test
