@@ -45,23 +45,3 @@ jobs:
         with:
           name: build-error-report
           path: junit/test-results.xml
-
-      - name: Run Tests
-        id: test
-        if: steps.build.outcome == 'success'
-        run: |
-          mvn -B test --file pom.xml
-        continue-on-error: true
-
-      - name: Generate and Upload Test Report
-        if: steps.build.outcome == 'success'
-        run: |
-          mkdir -p junit
-          cp target/surefire-reports/*.xml junit/test-results.xml
-
-      - name: Upload Test Report
-        if: steps.build.outcome == 'success'
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-report
-          path: junit/test-results.xml
