@@ -18,24 +18,26 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      - name: Create directory for test results
+        run: mkdir -p junit
+
       - name: Build Project
         id: build
         run: |
-          mvn -B clean package --file pom.xml || echo "Build failed. See logs." > build_failed.txt
-        continue-on-error: false  # Fail the job if Maven build fails
+          mvn -B clean package --file pom.xml 2>&1 | tee build_output.log
+        continue-on-error: false
 
       - name: Generate Build Error Report
-        if: failure()  # Only run if the build step failed
+        if: failure()  # Only run if the previous steps failed
         run: |
-          mkdir -p junit
           echo '<?xml version="1.0" encoding="UTF-8"?>' > junit/test-results.xml
-          echo '<testsuite name="Build Errors" tests="1" failures="1">' >> junit/test-results.xml
-          echo '  <testcase classname="Build" name="Build Script">' >> junit/test-results.xml
-          echo '    <failure type="error" message="Build failed. See log for details."><![CDATA[' >> junit/test-results.xml
-          cat build_failed.txt >> junit/test-results.xml
-          echo '    ]]></failure>' >> junit/test-results.xml
-          echo '  </testcase>' >> junit/test-results.xml
-          echo '</testsuite>' >> junit/test-results.xml
+          echo '  <testsuite name="Build Errors" tests="1" failures="1">' >> junit/test-results.xml
+          echo '    <testcase classname="Build" name="Build Script">' >> junit/test-results.xml
+          echo '      <failure type="error" message="Build failed. See log for details."><![CDATA[' >> junit/test-results.xml
+          cat build_output.log >> junit/test-results.xml
+          echo '      ]]></failure>' >> junit/test-results.xml
+          echo '    </testcase>' >> junit/test-results.xml
+          echo '  </testsuite>' >> junit/test-results.xml
 
       - name: Run Tests
         id: test
