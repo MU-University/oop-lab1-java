@@ -37,7 +37,6 @@
         <configuration>
           <!-- Optional: customize report generation -->
           <skipTests>false</skipTests>
-          <testFailureIgnore>true</testFailureIgnore>
           <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
         </configuration>
       </plugin>
