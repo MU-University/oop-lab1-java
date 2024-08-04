@@ -44,13 +44,6 @@ jobs:
       run: |
         mvn clean
         mvn -B test --file pom.xml
-
-    - name: Generate and Upload Test Report
-      if: always()
-      run: |
-        mkdir -p junit
-        cp target/surefire-reports/*test-results.xml junit
-    
           
     - name: Upload a Build Artifact
       if: always()
@@ -58,7 +51,7 @@ jobs:
       with:
         # Artifact name
         name: tet-results
-        path: junit/*test-results.xml
+        path: target/surefire-reports/*.xml
   
   
           
