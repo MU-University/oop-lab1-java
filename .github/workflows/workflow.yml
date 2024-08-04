@@ -3,11 +3,7 @@ name: Build and Test Maven Project
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
-
+  
 jobs:
   build:
 
@@ -32,9 +28,9 @@ jobs:
         echo "Build outcome: ${{ steps.build.outcome }}"
         mkdir -p target/surefire-reports
         echo '<?xml version="1.0" encoding="UTF-8"?>' > target/surefire-reports/test-results.xml
-        echo '  <testsuite name="Build Errors" tests="1" failures="1">' >> target/surefire-reports/test-results.xml
-        echo '    <testcase classname="Build" name="Build Script">' >> target/surefire-reports/test-results.xml
-        echo '      <failure type="error" message="Build failed due to syntax error"><![CDATA[' >> target/surefire-reports/test-results.xml
+        echo '  <testsuite name="Build Error" time="0" tests="1" errors="1" skipped="0" failures="1">' >> target/surefire-reports/test-results.xml
+        echo '    <testcase name="Build" classname="" time="0">' >> target/surefire-reports/test-results.xml
+        echo '      <failure type="Compilation Error"><![CDATA[' >> target/surefire-reports/test-results.xml
         echo '      ]]></failure>' >> target/surefire-reports/test-results.xml
         echo '    </testcase>' >> target/surefire-reports/test-results.xml
         echo '  </testsuite>' >> target/surefire-reports/test-results.xml
