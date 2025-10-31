@@ -13,7 +13,7 @@ jobs:
     steps:
     - name: Notify completion
       run: |
-        curl -X POST https://eshonkulov-asliddin.jprq.site/workflow/results \
+        curl -X POST https://eshonkulov-asliddin.jprq.live/workflow/results \
           -H "Content-Type: application/json" \
           -d '{
             "status": "completed",
@@ -26,3 +26,4 @@ jobs:
             "runId": "${{ github.event.workflow_run.id }}",
             "runNumber": "${{ github.event.workflow_run.run_number }}"
           }'
+
